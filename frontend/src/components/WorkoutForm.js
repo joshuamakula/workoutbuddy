@@ -4,6 +4,7 @@ const WorkoutForm = () => {
     const [title, setTitle] = useState('')
     const [load, setLoad] = useState('')
     const [reps, setReps] = useState('')
+    const [error, setError] = useState(null)
 
     const handleSubmit = async (e) => {
         e.preventdefault()
@@ -13,8 +14,23 @@ const WorkoutForm = () => {
         // fetch request to post new data
         const response = fetch('/api/workouts', {
             method: 'POST',
-
+            body: JSON.stringify(workout),
+            headers: {
+                'Content-Type': 'application/json'
+            }
         })
+        const json = await response.json()
+
+        if(!response.ok) {
+            setError(json.error)
+        }
+        if(response.ok) {
+            setTitle('')
+            setLoad('')
+            setReps('')
+            setError(null)
+            console.log("New workout added", json)
+        }
     }
 
     return ( 
